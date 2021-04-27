@@ -1,0 +1,30 @@
+---
+title: "Shorebird Report, BIO539 Project"
+author: "Emily Hamel"
+date: "April 26, 2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## INTRODUCTION
+
+On the whole, shorebird habitat in the North Atlantic tends to occupy large expanses of beachfront - in shorelines for foraging, lower dune environment for nesting, and lower energy tidal marshes of mudflats for more expansive staging prior to migration events. Humans, as seen from experience living on the Northern Atlantic coast, are drawn to these large stretches of open beach (most notably barrier beaches) for recreation in the warmer, summer months. This overlap in human and bird use of these areas is important to understand, as a number of regulations are set in place in order to properly monitor and manage seabird and shorebird populations. In some cases these birds are heavily monitored due to a federal or state status as an endangered species - in these cases critical habitat is also delineated and set aside for essential breeding activities. While space is made for nesting shorebirds to lay their eggs and rear their young away from human activity, their interactions with humans, while limited, are often unavoidable. In more populated areas, it is not uncommon to see nesting least terns "diving" at the heads of recreational beach-goers, or to hear the federally threatened Piping Plover peeping in some form of distress as people pass by. As mentioned, attempts are made to lessen this level of disturbance, but success is not guaranteed. In defending their nesting grounds and territories in this way, the birds are expending energy that would otherwise be reserved for foraging, chick rearing, and other necessary activities. This paper seeks to review a study on the relationship between anthropogenic disturbance and the energy budget of disrupted shorebirds. 
+
+This study was chosen due to its relevance to the issue of human disturbance and its impact on sensitive species. This 
+
+
+## METHODS
+
+
+## RESULTS
+
+## DISCUSSION
+
+Why I chose this study and how it is important to my work or whatever 
+
+Other elements to consider
+## LITERATURE CITED
+Linssen, H., van de Pol, M., Allen, A.M. et al. Disturbance increases high tide travel distance of a roosting shorebird but only marginally affects daily energy expenditure. Avian Res 10, 31 (2019). https://doi.org/10.1186/s40657-019-0171-8
