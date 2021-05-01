@@ -2,7 +2,10 @@
 title: "Shorebird Data Analysis: thought and data processing"
 author: "Emily Hamel"
 date: "April 26, 2021"
-output: pdf_document
+pdf_document: 
+    fig_caption: yes
+    keep_tex: yes
+header-includes: \usepackage{float}
 ---
 
 ```{r setup, include=FALSE}
@@ -11,6 +14,7 @@ library(tidyverse)
 library(moderndive)
 library(modelr)
 library(broom)
+library(readr)
 library(knitr)
 ```
 ```{r data, include=FALSE}
@@ -27,10 +31,16 @@ The data analysis in this document seeks to recreate this study's results, in or
 
 The following code and graphical information outlines this attempt to recreate the study's analysis and the thought processes involved. 
 
+## Short-term Disturbance: initial data analysis 
+
+The first piece of data to analyze in this study is the short-term impact on bird movement from different types of disturbance. In order to visualize the data I first created a plot (Figure 1) showing the immediate displacement resulting from different disturbance categories (namely: air force activity, non-anthropogenic events, and people walking past the roosting Oystercatchers). The "pre-disturbance" element of this plot seeks to show how disturbance related movements compare to the birds' activity prior to their displacement. The comparable plot in the literature is a box-plot, but I felt that the points provided a clearer picture of movement frequency and the related distance distribution - this choice, however, is simply a personal preference. 
+From this data visualization it became important 
+
+```{r immediate_dist, echo=FALSE, fig.pos = 'h', fig.cap="Figure 1. Depiction of immediate displacement resulting from different disturbance categories. The points are indicative of each displacement event of the 240 observations."}
+ggplot(disturbance, aes(movement_category, distance)) + geom_point() + labs(x = "Movement Category", y = "Immediate Displacement Distance (km)", title = "Immediate Displacement as a Result of Disturbance")
+```
+
+
 ### Relevant Literature
 Linssen, H., van de Pol, M., Allen, A.M. et al. Disturbance increases high tide travel distance of a roosting shorebird but only marginally affects daily energy expenditure. Avian Res 10, 31 (2019). https://doi.org/10.1186/s40657-019-0171-8
-
-## Initial Data Analysis 
-
-Following the 
 
