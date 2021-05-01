@@ -2,10 +2,11 @@
 title: "Shorebird Data Analysis: thought and data processing"
 author: "Emily Hamel"
 date: "April 26, 2021"
-pdf_document: 
-    fig_caption: yes
-    keep_tex: yes
-header-includes: \usepackage{float}
+output:
+  rmarkdown::pdf_document:
+    fig_caption: yes        
+    includes:  
+      in_header: header.txt 
 ---
 
 ```{r setup, include=FALSE}
@@ -22,6 +23,9 @@ hightide <- read_csv("DATA/High.tide.analysis.csv")
 disturbance <- read_csv("DATA/Immed.displ.analysis.csv")
 hightide_README <- read_csv("DATA/README_for_High.tide.analysis.csv")
 disturbance_README <- read_csv("DATA/README_for_Immed.displ.analysis.csv")
+
+model_1 <- kruskal.test(distance ~ movement_category, data = disturbance)
+model_1_pair <- pairwise.wilcox.test(disturbance$distance, g = disturbance$movement_category)
 ```
 
 ## Background
@@ -34,11 +38,23 @@ The following code and graphical information outlines this attempt to recreate t
 ## Short-term Disturbance: initial data analysis 
 
 The first piece of data to analyze in this study is the short-term impact on bird movement from different types of disturbance. In order to visualize the data I first created a plot (Figure 1) showing the immediate displacement resulting from different disturbance categories (namely: air force activity, non-anthropogenic events, and people walking past the roosting Oystercatchers). The "pre-disturbance" element of this plot seeks to show how disturbance related movements compare to the birds' activity prior to their displacement. The comparable plot in the literature is a box-plot, but I felt that the points provided a clearer picture of movement frequency and the related distance distribution - this choice, however, is simply a personal preference. 
-From this data visualization it became important 
 
-```{r immediate_dist, echo=FALSE, fig.pos = 'h', fig.cap="Figure 1. Depiction of immediate displacement resulting from different disturbance categories. The points are indicative of each displacement event of the 240 observations."}
+```{r immediate_dist, echo=FALSE, fig.pos = '!h', fig.cap="Depiction of immediate displacement resulting from different disturbance categories. The points are indicative of each displacement event of the 240 observations."}
 ggplot(disturbance, aes(movement_category, distance)) + geom_point() + labs(x = "Movement Category", y = "Immediate Displacement Distance (km)", title = "Immediate Displacement as a Result of Disturbance")
 ```
+
+
+From this data visualization it became important to run two statistical tests to understand if disturbance results in statistically significant movement. 
+First, I ran a Kruskal-Wallis rank sum test on the immediate displacement data set, comparing distance and movement category (as depicted in Figure 1). This test was chosen due to its reference in the research paper and based on its ability to analyze significance across multiple groups. This test was preformed simply by writing:
+
+  ```kruskal.test(distance ~ movement_category, data = disturbance)``` 
+  
+The output of this test displays a p-value of `r glance(model_1)$p.value`. Such a low p-value indicates that the relationship between disturbance events and Oystercatcher movement is very significant. 
+
+From here I was hoping to understand the significance of the data when compared against itself. This meaning that, I was interested to how if the birds' movements were significantly difference when disturbed compared to the pre-disturbance data. The paper I was working from ran a Dunn's test to make this determination, but I chose a pairwise Wilcoxon test - primarily because I was unable to load the package to run the Dunn's test and I felt that a more accessible approach would result in better reproducibility in the long run. In a similar fashion to the Kruskal-Wallis test, this Wilcoxon test was run as follows:
+
+```pairwise.wilcox.test(disturbance$distance, g = disturbance$movement_category)```
+
 
 
 ### Relevant Literature
