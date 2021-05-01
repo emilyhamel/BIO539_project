@@ -26,6 +26,8 @@ disturbance_README <- read_csv("DATA/README_for_Immed.displ.analysis.csv")
 
 model_1 <- kruskal.test(distance ~ movement_category, data = disturbance)
 model_1_pair <- pairwise.wilcox.test(disturbance$distance, g = disturbance$movement_category)
+
+model_2_hightide <- lm(distance_total ~ waterlevel, data = hightide)
 ```
 
 ## Background
@@ -39,8 +41,13 @@ The following code and graphical information outlines this attempt to recreate t
 
 The first piece of data to analyze in this study is the short-term impact on bird movement from different types of disturbance. In order to visualize the data I first created a plot (Figure 1) showing the immediate displacement resulting from different disturbance categories (namely: air force activity, non-anthropogenic events, and people walking past the roosting Oystercatchers). The "pre-disturbance" element of this plot seeks to show how disturbance related movements compare to the birds' activity prior to their displacement. The comparable plot in the literature is a box-plot, but I felt that the points provided a clearer picture of movement frequency and the related distance distribution - this choice, however, is simply a personal preference. 
 
-```{r immediate_dist, echo=FALSE, fig.pos = '!h', fig.cap="Depiction of immediate displacement resulting from different disturbance categories. The points are indicative of each displacement event of the 240 observations."}
-ggplot(disturbance, aes(movement_category, distance)) + geom_point() + labs(x = "Movement Category", y = "Immediate Displacement Distance (km)", title = "Immediate Displacement as a Result of Disturbance")
+```{r immediate_dist, echo=FALSE, fig.pos = '!h', fig.cap="Depiction of immediate displacement (in kilometers) resulting from different disturbance categories. The points are indicative of each displacement event of the 240 observations."}
+ggplot(disturbance, aes(movement_category, distance)) + 
+  geom_point() + 
+  theme_classic() + 
+  labs(x = "Movement Category", 
+       y = "Immediate Displacement Distance (km)", 
+       title = "Immediate Displacement as a Result of Disturbance")
 ```
 
 
@@ -49,14 +56,55 @@ First, I ran a Kruskal-Wallis rank sum test on the immediate displacement data s
 
   ```kruskal.test(distance ~ movement_category, data = disturbance)``` 
   
-The output of this test displays a p-value of `r glance(model_1)$p.value`. Such a low p-value indicates that the relationship between disturbance events and Oystercatcher movement is very significant. 
+The output of this test displays an overall p-value of `r glance(model_1)$p.value`. Such a low p-value indicates that the relationship between disturbance events and Oystercatcher movement is very significant. 
 
-From here I was hoping to understand the significance of the data when compared against itself. This meaning that, I was interested to how if the birds' movements were significantly difference when disturbed compared to the pre-disturbance data. The paper I was working from ran a Dunn's test to make this determination, but I chose a pairwise Wilcoxon test - primarily because I was unable to load the package to run the Dunn's test and I felt that a more accessible approach would result in better reproducibility in the long run. In a similar fashion to the Kruskal-Wallis test, this Wilcoxon test was run as follows:
+From here I was hoping to understand the significance of the data when compared against itself. This meaning that, I was interested to know if the birds' movements were significantly difference when disturbed compared to the pre-disturbance data. The paper I was working from ran a Dunn's test to make this determination, but I chose a pairwise Wilcoxon test - primarily because I was unable to load the package to run the Dunn's test and I felt that a more accessible approach would result in better reproducibility in the long run. In a similar fashion to the Kruskal-Wallis test, this Wilcoxon test was run as follows:
 
 ```pairwise.wilcox.test(disturbance$distance, g = disturbance$movement_category)```
 
+From this test we observe adjusted p-values using the holm method. After an extensive amount of internet searching, I was still unable to determine how to set the relevant p-values as inline code. Rather than agonizing over it I have pasted the tabular output into this file. The following is the output and pairwise comparisons using this test
+
+```
+data:  disturbance$distance and disturbance$movement_category 
+
+                  air force non-anthropogenic pre-disturbance
+non-anthropogenic 0.117     -                 -              
+pre-disturbance   1.6e-15   2.2e-11           -              
+walker            0.043     0.680             < 2e-16  
+```
+
+What we are interested in looking at is the p-values as indications of significance between pre-disturbance movements and the three categories of post-disturbance movements (again, those are air force activity, walkers, and non-anthropogenic events). We see here that all levels of disturbance are relevant when compared to the birds' state prior to disturbance, with air force activity and non-anthropogenic events at the site causing the most significant amount of movement. 
+
+## High Tide Interval Disturbance: the next step of analysis
+### Movement and Water Level
+
+The original study looks to find a relationship between the maximum water level and the high tide travel distance, and how this differs among three different roosting sites. In order to accomplish they utilized a generalized linear mixed model with a gamma response distribution and a log link function. There are no instructions within the study on how to accomplish this, and it is outside my realm of understanding, so I chose to conduct a linear analysis with best-fit lines relevant to the three roosting sites in the study area (referred to in Figure 2 as Mid, North, and South).  
+
+```{r hightide_distance, echo=FALSE, fig.pos = '!h', fig.cap="Relationship between the distance birds traveled during intervals of high tide (in kilometers) and the maximum water level (in meters)during these events. Data is divided between three relevant roosting sites: Mid, North, and South (shown in red, green, and blue - respectively)."}
+ggplot(hightide, aes(waterlevel, distance_total, color = roost)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  theme_classic() +
+  labs(x = "Maximum Water Level at High Tide (m)", 
+       y = "Distance Traveled in High Tide Interval (km)", 
+       color = "Roost Site", 
+       title = "High Tide Travel Distance and Water Level")
+```
+
+### High Tide Travel and Disturbance Displacement
+
+```{r hightide_disturbance, echo=FALSE, fig.pos = '!h', fig.cap="Relationship between the total distance traveled within the high tide period in kilometers (i.e. high tide travel distance) and the total distance traveled in responce to immediate disturbance within the high tide period in kilometers (calculated as the sum of the collected movements from GPS transmitters from disturbance, i.e. total immediate displacement)."}
+ggplot(hightide, aes(distance_disturbed, distance_total)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  theme_classic() +
+  labs(x ="Total Immediate Displacement (km)",
+       y = "Distance Traveled in High Tide Interval (km)",
+       title = "Displacement as a Result of Disturbance and High Tide Travel Distance")
+```
 
 
 ### Relevant Literature
-Linssen, H., van de Pol, M., Allen, A.M. et al. Disturbance increases high tide travel distance of a roosting shorebird but only marginally affects daily energy expenditure. Avian Res 10, 31 (2019). https://doi.org/10.1186/s40657-019-0171-8
+
+Linssen, H., Van De Pol, M., Allen, A. M., Jans, M., Ens, B. J., Krijgsveld, K. L., & Van der Kolk, H. J. (2019). Disturbance increases high tide travel distance of a roosting shorebird but only marginally affects daily energy expenditure. *Avian Research*, 10(1), 1-11. https://doi.org/10.1186/s40657-019-0171-8
 
