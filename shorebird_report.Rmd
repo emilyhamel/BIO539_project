@@ -1,5 +1,5 @@
 ---
-title: "Shorebird Report, BIO539 Project"
+title: "Shorebird Report, BIO539 Final Project"
 author: "Emily Hamel"
 date: "April 26, 2021"
 output: pdf_document
@@ -7,24 +7,55 @@ output: pdf_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(moderndive)
+library(modelr)
+library(broom)
+library(readr)
+```
+```{r data, include=FALSE}
+hightide <- read_csv("DATA/High.tide.analysis.csv")
+disturbance <- read_csv("DATA/Immed.displ.analysis.csv")
+hightide_README <- read_csv("DATA/README_for_High.tide.analysis.csv")
+disturbance_README <- read_csv("DATA/README_for_Immed.displ.analysis.csv")
+model_1 <- kruskal.test(distance ~ movement_category, data = disturbance)
 ```
 
 ## INTRODUCTION
 
-On the whole, shorebird habitat in the North Atlantic tends to occupy large expanses of beachfront - in shorelines for foraging, lower dune environment for nesting, and lower energy tidal marshes of mudflats for more expansive staging prior to migration events. Humans, as seen from experience living on the Northern Atlantic coast, are drawn to these large stretches of open beach (most notably barrier beaches) for recreation in the warmer, summer months. This overlap in human and bird use of these areas is important to understand, as a number of regulations are set in place in order to properly monitor and manage seabird and shorebird populations. In some cases these birds are heavily monitored due to a federal or state status as an endangered species - in these cases critical habitat is also delineated and set aside for essential breeding activities. While space is made for nesting shorebirds to lay their eggs and rear their young away from human activity, their interactions with humans, while limited, are often unavoidable. In more populated areas, it is not uncommon to see nesting least terns "diving" at the heads of recreational beach-goers, or to hear the federally threatened Piping Plover peeping in some form of distress as people pass by. As mentioned, attempts are made to lessen this level of disturbance, but success is not guaranteed. In defending their nesting grounds and territories in this way, the birds are expending energy that would otherwise be reserved for foraging, chick rearing, and other necessary activities. This paper seeks to review a study on the relationship between anthropogenic disturbance and the energy budget of disrupted shorebirds. 
+On the whole, shorebird habitat in the North Atlantic tends to occupy large expanses of beachfront - in shorelines for foraging, lower dune environment for nesting, and lower energy tidal marshes of mudflats for more expansive staging prior to migration events. Humans, as seen from experience living on the Northern Atlantic coast, are drawn to these large stretches of open beach (most notably barrier beaches) for recreation in the warmer, summer months. This overlap in human and bird use of these areas is important to understand, as a number of regulations are set in place in order to properly monitor and manage seabird and shorebird populations. In some cases these birds are heavily monitored due to a federal or state status as an endangered species - in these cases critical habitat is also delineated and set aside for essential breeding activities. While space is made for nesting shorebirds to lay their eggs and rear their young away from human activity, their interactions with humans, while limited, are often unavoidable. (Glover et al., 2011). In more populated areas, it is not uncommon to see nesting least terns "diving" at the heads of recreational beach-goers, or to hear the federally threatened Piping Plover peeping in some form of distress as people pass by. As mentioned, attempts are made to lessen this level of disturbance, but success is not guaranteed. In defending their nesting grounds and territories in this way, the birds are expending energy that would otherwise be reserved for foraging, chick rearing, and other necessary activities. This paper seeks to review a study on the relationship between anthropogenic disturbance and the energy budget of disrupted shorebirds. 
 
-This study was chosen due to its relevance to the issue of human disturbance and its impact on sensitive species. This 
+This study was chosen due to its relevance to the issue of human disturbance and its impact on sensitive species. Conducted in 2019 on Dutch Wadden Sea island of Vlieland in the Netherlands, this study utilizes a field-based observational approach in order to quantify the immediate and long term spatial disturbance responses of roosting Eurasian Oystercatchers (*Haematopus ostralegus*). Although these disturbance tests were not conducted on breeding birds, which is arguably when individuals are most sensitive, the study site was situated in an area that is a notable food source for migrating and wintering individuals. This area is also subject to different levels of military, commercial, and recreational human use. In order to relate disturbance events and associated energy expenditure the research team quantified immediate displacement (in the form of short-term flight responses to different levels of disturbance) and distance traveled during an entire high tide period (as the longer-term measurement, through the use of light-weight GPS tracking devices). These responses and travel distances were then compared to average energy budgets of similar species of Oystercatchers, derived from the literature, in order to measure the energetic impact of anthropogenic disturbance on this particular species of roosting shorebirds. (Linssen, et al., 2019).
 
 
 ## METHODS
 
+As with most studies done in an ecological setting, the site selection of this research plays a large role in the outcome of the results. The chosen study site is described as a mudflat and sand dune system on a barrier island in the Wadden Sea. This island serves as a breeding ground, an important roosting and foraging site (as previously mentioned), and an active military base. This military base in the area has been used for air force training - such as flying and targeted shooting and bombing by jets - since 1948, and these activities prevent public use of the wildlife area on weekdays. This study was conducted over a 100 day observation period and categorized disturbance sources as those from the air field noise, from people walking past roosting birds, and from "non-anthropogenic", which accounts for environmental factors or disturbance events originating from an unknown source. Lightweight GPS trackers were placed on twenty Oystercatchers determined to be over-wintering in the area in December and an additional twenty were tagged during the breeding season - of the forty fixed with trackers, twenty-one provided data for this study (it is unknown why the remaining trackers did not provide data, perhaps due to mechanical malfunction or the emigration or death of the birds). These GPS trackers were put in place in order to measure immediate disturbance in addition to individuals' long term movements during one high tide cycle. 
+
+To quantify the immediate response of the birds to different types of disturbance, researchers compared pre-disturbance measurements of response distance to the three levels of disturbance listed above. A Dunn's statistical test was conducted to determine the significance of the bird's repose to a stimulus when compared to its travel distance prior to disturbance. Additionally, the study describes an assessment of the birds' total travel distance during a high tide window compared to the immediate displacement response, in order to understand if the initial disturbance results in additional or less movement following that event. Correlations between this high tide window travel distance and the total displacement distance were assessed through the use of a generalized linear mixed model, where positive results indicated additional movement following the immediate displacement and negative results suggest no additional movement at the roosting site.
+As mentioned previously, the goal of this study was to understand how disturbance impacts shorebirds' energy budget. In order to make such an assessment the overall energetic cost of each disturbance type was quantified under the assumption that the birds fly at an average speed of 12 meters/second, and that flight expends 36 Jules/second. This calculation in conjunction with the estimation of daily energy expenditure resulting from disturbance in roosting areas (derived from the assumptions that an Oystercatcher's daily energy requirement is 860 kiloJoules, the roost for 12 hours a day, and that the frequency of nighttime disturbance is equal to the frequency observed during in the day), were used to estimated extra foraging time needed to compensate for this additional energy expenditure. The timescale for foraging was based on the dry weight measurement of prey items, assuming that the birds consume prey at an average rate of 1 milligram/second and that the energy content is about 21.9 kiloJoules/dry gram.
+
+
+For the purpose of this paper, it was the goal of this researcher to replicate the analysis and results of Lissen, et al. in order to assess the reproducibility of the research and to present a challenge relevant to personal, future research interests. Although the intention was to fully recreate the data analysis, it must be mentioned that some of the statistical tests and modeling involved fall outside *this* researcher's realm of understanding. With that in mind, it was possible to create the relevant figures from the data provided and to gain a baseline analysis of the data (without the more complex modeling, the process of which is not described in detail in the literature). 
+All three figures (as seen in the Results section) were created using the `ggplot()` function in R - all relevant graphical manipulation can be viewed in the "shorebird_analysis" file within this repository. 
+
+In order to analyze the data it was necessary to first run a Kruskal-Wallis rank sum test on the immediate displacement data set, these data were then tested further as pairwise comparisons using Wilcoxon rank sum exact test, with the intention of determining significance between disturbance categories. While this exact methodology differs from that outlined in the original study, it is the feeling of this researcher that, while recreation of the study is a primary goal, comprehension and digestibility of the results is paramount. In conducting the analysis in a pairwise fashion, it becomes possible to see how the birds' movements are significant compared to their movements prior to a disturbance event.
 
 ## RESULTS
 
+The results presented in this paper are the product of this researcher's attempt to recreate a complex analysis of preexisting research. This section will display relevant figures and discuss the outcome of this analysis. Due to the incomplete nature of the source material's description of their data processing, this results provided here will draw comparisons between the original study and this secondary, outside attempt to manipulate the available data in a similar fashion.  
+`r glance(model_1)$p.value`
+
 ## DISCUSSION
+
+Why I couldn't get the data to do what I wanted it to do...
 
 Why I chose this study and how it is important to my work or whatever 
 
 Other elements to consider
+
 ## LITERATURE CITED
-Linssen, H., van de Pol, M., Allen, A.M. et al. Disturbance increases high tide travel distance of a roosting shorebird but only marginally affects daily energy expenditure. Avian Res 10, 31 (2019). https://doi.org/10.1186/s40657-019-0171-8
+
+Glover, H. K., Weston, M. A., Maguire, G. S., Miller, K. K., & Christie, B. A. (2011). Towards ecologically meaningful and socially acceptable buffers: response distances of shorebirds in Victoria, Australia, to human disturbance. *Landscape and Urban Planning*, 103(3-4), 326-334.
+
+Linssen, H., Van De Pol, M., Allen, A. M., Jans, M., Ens, B. J., Krijgsveld, K. L., & Van der Kolk, H. J. (2019). Disturbance increases high tide travel distance of a roosting shorebird but only marginally affects daily energy expenditure. *Avian Research*, 10(1), 1-11. https://doi.org/10.1186/s40657-019-0171-8
