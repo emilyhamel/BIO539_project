@@ -76,3 +76,18 @@ ggplot(hightide, aes(distance_disturbed, distance_additional)) +
 #linear summary and model of the figure 4 data
 model_4_adddist <- lm(distance_additional ~ distance_disturbed, data = hightide)
 summary(model_4_adddist)
+
+
+#energy budget calculations
+
+  #calculate the average distance birds moved in each disturbance category
+  #tibble created where "m" = the average displacement distance in km
+dist_avg <- disturbance %>% group_by(movement_category) %>% summarise(m = mean(distance))
+  
+  #updated table to add energy expenditure, multiplying the average distance by the 3000 J/km used in flight
+    #this number was obtained by multiplying the 36 J/s used in flight and the bird's average flight speed of 12 J/s
+dist_avg_eng <- dist_avg %>% mutate(energy_use = m*3000)
+  #further updated table showing the average energy use due to disturbance compared to the daily energy requirement in J
+    #with an additional column quantifying the energy use in kJ
+dist_avg_eng_use <- dist_avg_eng %>% mutate(860000-energy_use) %>% mutate((860000-energy_use)/1000)
+
