@@ -1,9 +1,12 @@
+#relevant libraries
 library(tidyverse)
 library(moderndive)
 library(modelr)
 library(broom)
 library(readr)
 
+#loaded data 
+  #obtained from repository noted in the README file
 hightide <- read_csv("DATA/High.tide.analysis.csv")
 disturbance <- read_csv("DATA/Immed.displ.analysis.csv")
 hightide_README <- read_csv("DATA/README_for_High.tide.analysis.csv")
@@ -39,7 +42,7 @@ model_2_hightide <- lm(distance_total ~ waterlevel, data = hightide)
 summary(model_2_hightide)
 
 #high tide model, mapped across the three roosting site
-  #not totally necessary for data maniputation, but could be helpful to see how the sites differ in water level and roost sensitivity
+  #not totally necessary for data manipulation, but could be helpful to see how the sites differ in water level and roost sensitivity
 model_2_roost_split <- hightide %>%
   split(.$roost)%>%
   map(~lm(distance_total ~ waterlevel, data = .))
@@ -54,3 +57,22 @@ ggplot(hightide, aes(distance_disturbed, distance_total)) +
        y = "Distance Traveled in High Tide Interval (km)",
        title = "Displacement as a Result of Disturbance and High Tide Travel Distance",
        caption = "Figure 3. Relationship between the total distance traveled within the high tide period in kilometers (i.e. high tide travel distance) and the total distance traveled in responce to immediate disturbance within the high tide period in kilometers (calculated as the sum of the collected movements from GPS transmitters from disturbance, i.e. total immediate displacement).")
+
+#linear summary and model of the figure 3 data
+model_3_htdist <- lm(distance_total ~ distance_disturbed, data = hightide)
+summary(model_3_htdist)
+
+
+#Figure 4 plot 
+ggplot(hightide, aes(distance_disturbed, distance_additional)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  theme_classic() +
+  labs(x ="Total Immediate Displacement (km)",
+       y = "Additional High Tide Travel Distance (km)",
+       title = "Displacement as a Result of Disturbance and Additional Travel Distance",
+       caption = "Figure 4. Depiction of the relationship bewteen the additional distance traveled during the high tide interval, measured in kilometers, and the total distance traveled in response to immediate disturbance events, also measured in kilometers.") 
+
+#linear summary and model of the figure 4 data
+model_4_adddist <- lm(distance_additional ~ distance_disturbed, data = hightide)
+summary(model_4_adddist)

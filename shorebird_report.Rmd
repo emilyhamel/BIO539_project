@@ -28,6 +28,10 @@ model_1 <- kruskal.test(distance ~ movement_category, data = disturbance)
 model_1_pair <- pairwise.wilcox.test(disturbance$distance, g = disturbance$movement_category)
 
 model_2_hightide <- lm(distance_total ~ waterlevel, data = hightide)
+
+model_3_htdist <- lm(distance_total ~ distance_disturbed, data = hightide)
+
+model_4_adddist <- lm(distance_additional ~ distance_disturbed, data = hightide)
 ```
 
 ## INTRODUCTION
@@ -86,7 +90,40 @@ ggplot(hightide, aes(waterlevel, distance_total, color = roost)) +
 
 From the analysis of immediate disturbance in Figure 1, Figure 2 was created to show the relationship between the birds travel distance during the high tide interval and the maximum water level during the same interval (due to the fact that the water level at high tide can differ, especially in the Northern latitudes of the Netherlands). The original study ran a generalized linear mixed model with a gamma response distribution and a log link function, but this researcher chose to run a linear regression model instead in order to produce a more accessible analysis. 
 
-The results of the linear model associated with Figure 2 show an overall p-value of `r glance(model_2_hightide)$p.value`, displaying a significant relationship between the water level and the distance the birds were likely to move during a given high tide interval. This makes logical sense considering the fact that the level of the high tide is not a static value and birds that forage at the shoreline will inevitably base their movements around the rising and falling of the tide. 
+The results of the linear model associated with Figure 2 show an overall p-value of `r glance(model_2_hightide)$p.value`, displaying a significant relationship between the water level and the distance the birds were likely to move during a given high tide interval. This makes logical sense considering the fact that the level of the high tide is not a static value and birds that forage at the shoreline will inevitably base their movements around the rising and falling of the tide. This model also produces an $R^2$ value of `r summary(model_2_hightide)$r.squared`, indicating that the relationship between the water level and the birds' movements during a high tide cycle only accounts for about 3% of the variation in the data. 
+
+
+```{r hightide_disturbance, echo=FALSE, fig.pos = '!h', fig.cap="Relationship between the total distance traveled within the high tide period in kilometers (i.e. high tide travel distance) and the total distance traveled in responce to immediate disturbance within the high tide period in kilometers (calculated as the sum of the collected movements from GPS transmitters from disturbance, i.e. total immediate displacement)."}
+ggplot(hightide, aes(distance_disturbed, distance_total)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  theme_classic() +
+  labs(x ="Total Immediate Displacement (km)",
+       y = "Distance Traveled in High Tide Interval (km)",
+       title = "Displacement as a Result of Disturbance and High Tide Travel Distance")
+```
+
+The above figure (Figure 3) seeks to utilize the total distance individuals moved during a high tide cycle to understand the significance of their movements in response to disturbance. As was in case with the data in Figure 2, the original research ran more complicated models than was possible for this researcher to recreate, so the data in Figure 3 was analyzed using a linear model. This model produced a p-value of `r glance(model_3_htdist)$p.value` and an $R^2$ value of `r summary(model_3_htdist)$r.squared`, indicating a lack of significance between these two variables. 
+
+
+```{r add_disturbance, echo=FALSE, fig.pos = '!h', fig.cap="Depiction of the relationship bewteen the additional distance traveled during the high tide interval, measured in kilometers, and the total distance traveled in response to immediate disturbance events, also measured in kilometers."}
+ggplot(hightide, aes(distance_disturbed, distance_additional)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  theme_classic() +
+  labs(x ="Total Immediate Displacement (km)",
+       y = "Additional High Tide Travel Distance (km)",
+       title = "Displacement as a Result of Disturbance and Additional Travel Distance")
+```
+
+The study moves one step further in order to understand if a relationship exists between the additional high tide travel distance (which was defined as the high tide travel distance minus total immediate displacement) and the total immediate displacement. This information is outlined above, in Figure 4. From the linear model in this figure one finds a p-value of `r glance(model_4_adddist)$p.value` and a $R^2$ value of `r summary(model_4_adddist)$r.squared`. This meaning that, while significant, this element of the data does not account for a substantial amount of the variation in this data. 
+
+### Relevant Energy Budgeting Results
+
+
+
+In sum, one can observe a relationship between Oystercatcher movement as it relates to different levels of anthropogenic disturbance - with loud sounds from military training procedures resulting in the most significant level of movement. These relationships, while impacted by the tide cycle, are not an extremely significant representation of environmental factors. Although the purpose of the original study was to determine the impact of anthropogenic disturbance to the roosting birds' energy budget, this researcher was unable to determine the methodology used in the paper to produce this result. Perhaps this speaks to the paper's interest in allowing the reader to reproduce its data or perhaps (more likely) this speaks to *this* researcher's limited skills. While I am leaning toward the latter explanation, it was the over all goal of the project to utilize R's data analysis programming to re-create figures and run relevant statistical tests.    
+
 
 ## DISCUSSION
 
@@ -94,7 +131,7 @@ First and foremost, it is the opinion of this researcher that the reader should 
 
 Although this study is not directly related to the research I am conducting for my major paper and I can admit to some of data analysis in this project to be over my head, it was my intention to stick with this project. As mentioned, I have been working in the wildlife conservation field for a number of years, primarily working in the monitoring and management of nesting seabirds and shorebirds. Throughout these experiences I have learned how human disturbance can act as a limiting factor in the nest success of these ground-nesting species. Oftentimes crowded beaches, dog-walking, and people passing by nesting sites can flush birds off their eggs and even have the potential to result in nest abandonment. I chose this study because I had not considered the similar impact this disturbance could have on the energy budget of these birds. Understanding these relationships remains an important element of managing coastal birds, which is something that I plan to to continue to base my career around as I exit this graduate program.  
 
-Overall, this project has exposed a personal struggle with statistics. I feel comfortable in the figures I have created for this project (which was my primary goal in taking this class), but it is clear that as I continue my work I need to expose myself to different statistical tests and analysis. It is my hope that the evaluation of this project is of the effort of the work involved rather than the specifics of the results. I hope to assure the reader that I invested a substantial amount of time and effort into this attempt and, although it is inherently flawed, it represents my best attempt to complete the required tasks.
+Overall, this project has exposed a personal struggle with statistics (and the relevant energy budgeting equation). I feel comfortable in the figures I have created for this project (which was my primary goal in taking this class), but it is clear that as I continue my work I need to expose myself to different statistical tests and analysis. It is my hope that the evaluation of this project is of the effort of the work involved rather than the specifics of the results. I hope to assure the reader that I invested a substantial amount of time and effort into this attempt and, although it is inherently flawed, it represents my best attempt to complete the required tasks. Perhaps it would have been more appropriate to have chosen a paper with a less complicated analytic requirement, but I maintain that this has been a solid first attempt and good practice for handling data in future projects.
 
 
 ## LITERATURE CITED

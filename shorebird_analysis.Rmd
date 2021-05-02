@@ -28,6 +28,10 @@ model_1 <- kruskal.test(distance ~ movement_category, data = disturbance)
 model_1_pair <- pairwise.wilcox.test(disturbance$distance, g = disturbance$movement_category)
 
 model_2_hightide <- lm(distance_total ~ waterlevel, data = hightide)
+
+model_3_htdist <- lm(distance_total ~ distance_disturbed, data = hightide)
+
+model_4_adddist <- lm(distance_additional ~ distance_disturbed, data = hightide)
 ```
 
 ## Background
@@ -93,6 +97,8 @@ ggplot(hightide, aes(waterlevel, distance_total, color = roost)) +
 
 ### High Tide Travel and Disturbance Displacement
 
+The relationship between the birds' movement and the related water level is followed by an analysis of the total travel distance with a high tide cycle and the travel distance as a result of the disturbance discussed in Figure 1. The original paper used a similar analysis as discussed in Figure 2, but, again, I chose to simplify the analysis for my benefit and created Figure 3 using a best fit line and a linear model. 
+
 ```{r hightide_disturbance, echo=FALSE, fig.pos = '!h', fig.cap="Relationship between the total distance traveled within the high tide period in kilometers (i.e. high tide travel distance) and the total distance traveled in responce to immediate disturbance within the high tide period in kilometers (calculated as the sum of the collected movements from GPS transmitters from disturbance, i.e. total immediate displacement)."}
 ggplot(hightide, aes(distance_disturbed, distance_total)) +
   geom_point() +
@@ -103,6 +109,29 @@ ggplot(hightide, aes(distance_disturbed, distance_total)) +
        title = "Displacement as a Result of Disturbance and High Tide Travel Distance")
 ```
 
+
+### Additional Travel Distance and Disturbance Displacement
+
+The research takes this analysis one step further and creates an additional figure to understand if there was a relationship between the additional high tide travel distance (which was defined as the high tide travel distance minus total immediate displacement) and the total immediate displacement. A figure similar to Figure 3 was created to follow this continued analysis. And, again, as was the case for the earlier figures in my analysis, a linear model was used. 
+
+```{r add_disturbance, echo=FALSE, fig.pos = '!h', fig.cap="Depiction of the relationship bewteen the additional distance traveled during the high tide interval, measured in kilometers, and the total distance traveled in response to immediate disturbance events, also measured in kilometers."}
+ggplot(hightide, aes(distance_disturbed, distance_additional)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  theme_classic() +
+  labs(x ="Total Immediate Displacement (km)",
+       y = "Additional High Tide Travel Distance (km)",
+       title = "Displacement as a Result of Disturbance and Additional Travel Distance")
+```
+
+
+## Energy Requirement 
+Averages per type of disturbance
+
+
+## Final Notes
+
+The purpose of this paper was to step through the process outlined in the 2019 study conducted by Linssen, et al. Although the analysis here is flawed and the stats are not always in line with what was described in the original study (primarily due to my lack of ability to create similar models and determine the appropriate equations), 
 
 ### Relevant Literature
 
