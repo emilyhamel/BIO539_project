@@ -41,7 +41,7 @@ ggplot(hightide, aes(waterlevel, distance_total, color = roost)) +
 model_2_hightide <- lm(distance_total ~ waterlevel, data = hightide)
 summary(model_2_hightide)
 
-#high tide model, mapped across the three roosting site
+#high tide model, mapped across the three roosting sites
   #not totally necessary for data manipulation, but could be helpful to see how the sites differ in water level and roost sensitivity
 model_2_roost_split <- hightide %>%
   split(.$roost)%>%

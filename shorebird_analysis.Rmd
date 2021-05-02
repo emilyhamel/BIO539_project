@@ -66,7 +66,7 @@ First, I ran a Kruskal-Wallis rank sum test on the immediate displacement data s
   
 The output of this test displays an overall p-value of `r glance(model_1)$p.value`. Such a low p-value indicates that the relationship between disturbance events and Oystercatcher movement is very significant. 
 
-From here I was hoping to understand the significance of the data when compared against itself. This meaning that, I was interested to know if the birds' movements were significantly difference when disturbed compared to the pre-disturbance data. The paper I was working from ran a Dunn's test to make this determination, but I chose a pairwise Wilcoxon test - primarily because I was unable to load the package to run the Dunn's test and I felt that a more accessible approach would result in better reproducibility in the long run. In a similar fashion to the Kruskal-Wallis test, this Wilcoxon test was run as follows:
+From here I was hoping to understand the significance of the data when compared against itself. This meaning that, I was interested to know if the birds' movements were significantly different when disturbed compared to the pre-disturbance data. The paper I was working from ran a Dunn's test to make this determination, but I chose a pairwise Wilcoxon test - primarily because I was unable to load the package to run the Dunn's test and I felt that a more accessible approach would result in better reproducibility in the long run. In a similar fashion to the Kruskal-Wallis test, this Wilcoxon test was run as follows:
 
 ```pairwise.wilcox.test(disturbance$distance, g = disturbance$movement_category)```
 
@@ -88,6 +88,11 @@ What we are interested in looking at is the p-values as indications of significa
 
 The original study looks to find a relationship between the maximum water level and the high tide travel distance, and how this differs among three different roosting sites. In order to accomplish they utilized a generalized linear mixed model with a gamma response distribution and a log link function. There are no instructions within the study on how to accomplish this, and it is outside my realm of understanding, so I chose to conduct a linear analysis with best-fit lines relevant to the three roosting sites in the study area (referred to in Figure 2 as Mid, North, and South).  
 
+This linear model was run using: 
+```
+lm(distance_total ~ waterlevel, data = hightide)
+```
+
 ```{r hightide_distance, echo=FALSE, fig.pos = '!h', fig.cap="Relationship between the distance birds traveled during intervals of high tide (in kilometers) and the maximum water level (in meters)during these events. Data is divided between three relevant roosting sites: Mid, North, and South (shown in red, green, and blue - respectively)."}
 ggplot(hightide, aes(waterlevel, distance_total, color = roost)) +
   geom_point() +
@@ -101,7 +106,12 @@ ggplot(hightide, aes(waterlevel, distance_total, color = roost)) +
 
 ### High Tide Travel and Disturbance Displacement
 
-The relationship between the birds' movement and the related water level is followed by an analysis of the total travel distance with a high tide cycle and the travel distance as a result of the disturbance discussed in Figure 1. The original paper used a similar analysis as discussed in Figure 2, but, again, I chose to simplify the analysis for my benefit and created Figure 3 using a best fit line and a linear model. 
+The relationship between the birds' movement and the related water level is followed by an analysis of the total travel distance within a high tide cycle and the travel distance as a result of the disturbance discussed in Figure 1. The original paper used a similar analysis as discussed in Figure 2, but, again, I chose to simplify the analysis for my benefit and created Figure 3 using a best fit line and a linear model. 
+
+Similar to Figure 2, I ran the Figure 3 linear model as:
+```
+lm(distance_total ~ distance_disturbed, data = hightide)
+```
 
 ```{r hightide_disturbance, echo=FALSE, fig.pos = '!h', fig.cap="Relationship between the total distance traveled within the high tide period in kilometers (i.e. high tide travel distance) and the total distance traveled in responce to immediate disturbance within the high tide period in kilometers (calculated as the sum of the collected movements from GPS transmitters from disturbance, i.e. total immediate displacement)."}
 ggplot(hightide, aes(distance_disturbed, distance_total)) +
@@ -117,6 +127,10 @@ ggplot(hightide, aes(distance_disturbed, distance_total)) +
 ### Additional Travel Distance and Disturbance Displacement
 
 The research takes this analysis one step further and creates an additional figure to understand if there was a relationship between the additional high tide travel distance (which was defined as the high tide travel distance minus total immediate displacement) and the total immediate displacement. A figure similar to Figure 3 was created to follow this continued analysis. And, again, as was the case for the earlier figures in my analysis, a linear model was used. 
+
+```
+lm(distance_additional ~ distance_disturbed, data = hightide)
+```
 
 ```{r add_disturbance, echo=FALSE, fig.pos = '!h', fig.cap="Depiction of the relationship bewteen the additional distance traveled during the high tide interval, measured in kilometers, and the total distance traveled in response to immediate disturbance events, also measured in kilometers."}
 ggplot(hightide, aes(distance_disturbed, distance_additional)) +
@@ -139,6 +153,10 @@ With this understanding of energy used per kilometer, I then created a table sho
 average distance (in km) * 3000 J/km
 ```
 This energy use was then compared to the 860 kJ of the birds' daily required energy by subtracting this requirement from the energy loss due to disturbance displacement. This final column shows this impact of displacement from this it is clear that the energy lost to disturbance displacement only poses a minimal threat to the birds' daily energy budget. 
+
+```{r table, echo = FALSE}
+kable(dist_avg_eng_use, col.names = c("Movement Category", "Average Displacement Distance (km)", "Energy Used (J)", "Energy Requirement Minus Loss (J)", "Energy Requirement Minus Loss (kJ)"))
+```
 
 Although there was most definitely a tidier way to create these tables, stepping through each one and ```mutate()``` them in a stepwise fashion allowed me to visualize the data and think through how the researchers in this study were able to assess this relationship.
 
