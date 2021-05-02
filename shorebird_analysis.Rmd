@@ -32,6 +32,10 @@ model_2_hightide <- lm(distance_total ~ waterlevel, data = hightide)
 model_3_htdist <- lm(distance_total ~ distance_disturbed, data = hightide)
 
 model_4_adddist <- lm(distance_additional ~ distance_disturbed, data = hightide)
+
+dist_avg <- disturbance %>% group_by(movement_category) %>% summarise(m = mean(distance))
+dist_avg_eng <- dist_avg %>% mutate(energy_use = m*3000)
+dist_avg_eng_use <- dist_avg_eng %>% mutate(860000-energy_use) %>% mutate((860000-energy_use)/1000)
 ```
 
 ## Background
@@ -126,12 +130,21 @@ ggplot(hightide, aes(distance_disturbed, distance_additional)) +
 
 
 ## Energy Requirement 
-Averages per type of disturbance
+In order to determine the energy expenditure of disturbance events it was first necessary to determine the energy the birds used in flight. The paper outlines an average flight speed of 12 m/s and flight costing a calculated 36 J/s of energy. 
+```
+36 J/s / 12 m/s = 3 J/m = 3000 J/km
+```
+With this understanding of energy used per kilometer, I then created a table showing the average displacement distance for each disturbance event. This table was further mutated to display the energy use for this average movement, calculated as:
+```
+average distance (in km) * 3000 J/km
+```
+This energy use was then compared to the 860 kJ of the birds' daily required energy by subtracting this requirement from the energy loss due to disturbance displacement. This final column shows this impact of displacement from this it is clear that the energy lost to disturbance displacement only poses a minimal threat to the birds' daily energy budget. 
 
+Although there was most definitely a tidier way to create these tables, stepping through each one and ```mutate()``` them in a stepwise fashion allowed me to visualize the data and think through how the researchers in this study were able to assess this relationship.
 
 ## Final Notes
 
-The purpose of this paper was to step through the process outlined in the 2019 study conducted by Linssen, et al. Although the analysis here is flawed and the stats are not always in line with what was described in the original study (primarily due to my lack of ability to create similar models and determine the appropriate equations), 
+The purpose of this paper was to step through the process outlined in the 2019 study conducted by Linssen, et al. Although the analysis here is flawed and the stats are not always in line with what was described in the original study (primarily due to my lack of ability to create similar models and determine the appropriate equations), I believe I arrived at similar conclusions regarding the impact of disturbance on the energy budget of these Eurasian Oystercatchers in Northern Europe. 
 
 ### Relevant Literature
 
